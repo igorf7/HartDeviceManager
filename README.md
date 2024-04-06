@@ -1,7 +1,6 @@
 # HartDeviceManager
 Version 1.5.1
 ## Description
-Программа Hart Device Manager предназначена для проверки, опроса и настройки полевых устройств с HART-протоколом.
-Поддерживаемые версии HART: 4.0 - 7.5
+The Hart Device Manager program is designed to test, interrogate and configure field devices with the HART protocol. Supported HART versions: 4.0 - 7.5
 ## Content
-Репозиторий содержит исходные файлы проекта и project-файл.
+The repository contains the project source files and the project file.
