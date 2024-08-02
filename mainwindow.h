@@ -1,18 +1,18 @@
-﻿#ifndef MAINWINDOW_H
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include "port.h"
 #include "hart.h"
 #include "hartpro.h"
+#include "loadviewer.h"
 #include "configviewer.h"
+#include "calibviewer.h"
 #include "moniviewer.h"
 #include <QMainWindow>
 #include <QComboBox>
 #include <QListWidget>
 #include <QListView>
 #include <QPointer>
-#include <QProgressBar>
-#include <QLayout>
 
 class MainWindow : public QMainWindow
 {
@@ -38,16 +38,18 @@ private:
     QComboBox* portComboBox;
     QListWidget* listWidget;
 
-    //QPointer<LoadViewer> loadViewer;
+    QPointer<LoadViewer> loadViewer;
     QPointer<ConfigViewer> configViewer;
-    //QPointer<CalibViewer> calibViewer;
+    QPointer<CalibViewer> calibViewer;
     QPointer<MoniViewer> moniViewer;
     QPointer<QVBoxLayout> tabLayout;
 
     int currentTabIndex = 0;
 
     enum{
-        CONFIG_TAB_INDEX = 0,
+        LOADER_TAB_INDEX = 0,
+        CONFIG_TAB_INDEX,
+        CALIBR_TAB_INDEX,
         MONITOR_TAB_INDEX
     }mainTabIndexes;
 

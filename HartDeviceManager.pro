@@ -25,6 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    calibviewer.cpp \
+    loadviewer.cpp \
     main.cpp \
     mainwindow.cpp \
     configviewer.cpp \
@@ -36,6 +38,8 @@ SOURCES += \
     convert.cpp
 
 HEADERS += \
+    calibviewer.h \
+    loadviewer.h \
         mainwindow.h \
     hart.h \
     hartpro.h \
