@@ -526,16 +526,13 @@ void MainWindow::onAbout_triggered()
     aboutWindow->setModal(true);
     aboutWindow->setWindowFlags(Qt::Drawer);
     QLabel* logoLabel = new QLabel;
-    QPixmap logoPixmap(":/images/alc64x64_32.png");
-    logoLabel->setPixmap(logoPixmap);
     aboutWindow->setAttribute(Qt::WA_DeleteOnClose);
 
     QLabel* textLabel = new QLabel;
     QVBoxLayout* aboutLayot = new QVBoxLayout;
     textLabel->setText(tr("<h1>HART® Device Manager</h1>"
-                          "<p>Версия 1.5.1</p>"
-                          "<p>Программа для проверки и настройки приборов с протоколом HART.</p>"
-                          "<p>Copyright &copy; ООО Альконт, 2018.</p>"));
+                          "<p>Версия 1.5.2</p>"
+                          "<p>Программа для проверки и настройки приборов с протоколом HART.</p>"));
 
     aboutLayot->addWidget(logoLabel, 0, Qt::AlignCenter);
     aboutLayot->addWidget(textLabel, 0, Qt::AlignCenter);
