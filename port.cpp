@@ -45,12 +45,8 @@ void ComPort:: onConnectClicked(const QString &port) {
             emit portOpened(str);
         }
         else {
-            emit portError(tr("Порт не доступен. Возможно он занят другим приложением."));
+            emit portError(tr("The port is unavailable"));
         }
-    }
-    else {
-        // qDebug() << "ComPort::onConnectClicked()"
-        //          << "serialPort.isOpen()";
     }
 }
 
@@ -119,7 +115,7 @@ void ComPort::onReadyRead()
 void ComPort::onSendDataPacket(const QByteArray &packet)
 {   
     if (!serialPort.isOpen()) {
-        emit portError(tr("Порт не открыт"));
+        emit portError(tr("The port is not open"));
     }
     else {
         QByteArray hartFrame;

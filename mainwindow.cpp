@@ -30,13 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout* mainLayout = new QHBoxLayout(mainWidget);
 
     /* Create menu bar */
-    QAction* createFileAct = new QAction(tr("&Создать"), this);
+    QAction* createFileAct = new QAction(tr("&Create"), this);
     connect(createFileAct, SIGNAL(triggered()), this, SLOT(createFileAct_triggered()));
-    QAction* openFileAct = new QAction(tr("&Открыть"), this);
+    QAction* openFileAct = new QAction(tr("&Open"), this);
     connect(openFileAct, SIGNAL(triggered()), this, SLOT(openFileAct_triggered()));
-    QAction* quitAct = new QAction(tr("&Выход"), this);
+    QAction* quitAct = new QAction(tr("&Exit"), this);
     connect(quitAct, SIGNAL(triggered()), this, SLOT(onQuitAct_triggered()));
-    QMenu* fileMenu = menuBar()->addMenu(tr("&Файл"));
+    QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
     openFileAct->setEnabled(false);
     createFileAct->setEnabled(false);
     fileMenu->addAction(createFileAct);
@@ -44,70 +44,78 @@ MainWindow::MainWindow(QWidget *parent)
     fileMenu->addSeparator();
     fileMenu->addAction(quitAct);
 
-    primaryAct = new QAction(tr("&Первичный мастер"), this);
+    primaryAct = new QAction(tr("&Primary master"), this);
     primaryAct->setCheckable(true);
     primaryAct->setChecked(true);
     connect(primaryAct, SIGNAL(triggered()), this, SLOT(onPrimaryAct_triggered()));
     connect(primaryAct, SIGNAL(toggled(bool)), this, SLOT(onPrimaryAct_toggled(bool)));
-    secondaryAct = new QAction(tr("&Вторичный мастер"), this);
+    secondaryAct = new QAction(tr("&Secondary master"), this);
     secondaryAct->setCheckable(true);
     secondaryAct->setChecked(false);
     connect(secondaryAct, SIGNAL(triggered()), this, SLOT(onSecondaryAct_triggered()));
-    QMenu* optionsMenu = menuBar()->addMenu(tr("&Параметры"));
+    QMenu* optionsMenu = menuBar()->addMenu(tr("&Preferences"));
     optionsMenu->addAction(primaryAct);
     optionsMenu->addAction(secondaryAct);
 
-    QAction* resetAct = new QAction(tr("&Рестарт"), this);
+    QAction* resetAct = new QAction(tr("&Restart"), this);
     connect(resetAct, SIGNAL(triggered()), this, SLOT(onReset_triggered()));
-    QAction* selfDiaAct = new QAction(tr("&Самодиагностика"), this);
+    QAction* selfDiaAct = new QAction(tr("&Self‑diagnosis"), this);
     connect(selfDiaAct, SIGNAL(triggered()), this, SLOT(onSelfDiaAct_triggered()));
-    QAction* hardResetAct = new QAction(tr("&Аппаратный сброс"), this);
+    QAction* hardResetAct = new QAction(tr("&Hardware reset"), this);
     connect(hardResetAct, SIGNAL(triggered()), this, SLOT(onHardReset_triggered()));
-    QMenu* commandsMenu = menuBar()->addMenu(tr("&Команды"));
+    QMenu* commandsMenu = menuBar()->addMenu(tr("&Commands"));
     commandsMenu->addAction(resetAct);
     commandsMenu->addAction(selfDiaAct);
     commandsMenu->addAction(hardResetAct);
 
-    QAction* manualAct = new QAction(tr("&Инструкция"), this);
+    QAction* manualAct = new QAction(tr("&Manual"), this);
     connect(manualAct, SIGNAL(triggered()), this, SLOT(onManual_triggered()));
-    QAction* aboutAct = new QAction(tr("&О программе"), this);    
+    QAction* aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(onAbout_triggered()));
-    QMenu* helpMenu = menuBar()->addMenu(tr("&Справка"));
+    QMenu* helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(manualAct);
     helpMenu->addAction(aboutAct);
+
+    QAction* enAct = new QAction(tr("&English"), this);
+    connect(enAct, SIGNAL(triggered()), this, SLOT(onEn_triggered()));
+    QAction* ruAct = new QAction(tr("&Русский"), this);
+    connect(ruAct, SIGNAL(triggered()), this, SLOT(onRu_triggered()));
+    QMenu* langMenu = menuBar()->addMenu(tr("&En / Ru"));
+    langMenu->addAction(enAct);
+    langMenu->addAction(ruAct);
 
     /* Activate status bar */
     QFont font;
     font.setBold(true);
     font.setItalic(true);
     statusBar()->setFont(font);
-    statusBar()->showMessage("Порт закрыт");
+    statusBar()->showMessage(tr("Port is closed"));
 
     /* Setup left panel group widgets */
     QWidget* leftPanel = new QGroupBox(mainWidget); // container for left panel
 ///    leftPanel->setFixedWidth(255);
 
     portComboBox = new QComboBox;
-    connPushButton = new QPushButton("Открыть");
+    connPushButton = new QPushButton(tr("Open"));
     connPushButton->setAutoDefault(true);
     connect(connPushButton, SIGNAL(clicked()), this, SLOT(onConnPushButton_clicked()));
 
     QHBoxLayout* connHlayout1 = new QHBoxLayout;    
     connHlayout1->addWidget(portComboBox);
     connHlayout1->addWidget(connPushButton);        
-    QGroupBox* portGroupBox= new QGroupBox("Соединение");
+    QGroupBox* portGroupBox= new QGroupBox(tr("Connection"));
     portGroupBox->setFlat(true);
     portGroupBox->setAlignment(Qt::AlignCenter);
     portGroupBox->setLayout(connHlayout1);
 
-    listGroupBox = new QGroupBox("Список устройств");
+    listGroupBox = new QGroupBox(tr("Device list"));
     listGroupBox->setFlat(true);
     listGroupBox->setAlignment(Qt::AlignCenter);
     QVBoxLayout* listVLayout = new QVBoxLayout;
     listWidget = new QListWidget();
     listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     connect(listWidget, SIGNAL(itemSelectionChanged()), this, SLOT(onItemSelectionChanged()));
-    findPushButton = new QPushButton("Поиск устройств");
+    findPushButton = new QPushButton(tr("Device search"));
     findPushButton->setAutoDefault(true);
     connect(findPushButton, SIGNAL(clicked()), this, SLOT(onFindPushButton_clicked()));
     findBar = new QProgressBar;
@@ -132,10 +140,10 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* configTab = new QWidget;   // configuration viewer
     QWidget* calibTab = new QWidget;    // calibration viewer
     QWidget* moniTab = new QWidget;     // monitor viewer
-    mainTabWidget->addTab(loaderTab, "Загрузчик");
-    mainTabWidget->addTab(configTab, "Конфигурация");
-    mainTabWidget->addTab(calibTab, "Калибровка");
-    mainTabWidget->addTab(moniTab, "Монитор");
+    mainTabWidget->addTab(loaderTab, tr("Loader"));
+    mainTabWidget->addTab(configTab, tr("Configuration"));
+    mainTabWidget->addTab(calibTab, tr("Calibration"));
+    mainTabWidget->addTab(moniTab, tr("Monitoring"));
 
     /* Set mainWidget as central widget */
 ///    mainLayout->addWidget(leftPanel, 0, Qt::AlignLeft);
@@ -213,7 +221,7 @@ MainWindow::~MainWindow()
  */
 void MainWindow::onMainTabWidget_currentChanged(int index)
 {
-    if( findPushButton->text() != "Поиск устройств" ){
+    if( findPushButton->text() != tr("Device search") ){
         if( mainTabWidget->currentIndex() == LOADER_TAB_INDEX ){
             mainTabWidget->setCurrentIndex(currentTabIndex);
             return;
@@ -308,7 +316,7 @@ void MainWindow::onMainTabWidget_currentChanged(int index)
 
 void MainWindow::onPortError(const QString &msg)
 {
-    QMessageBox::warning(this, tr("Ошибка"), msg);
+    QMessageBox::warning(this, tr("Error"), msg);
 }
 
 /**
@@ -329,9 +337,9 @@ void MainWindow::updatePortList()
  */
 void MainWindow::onPortOpened(const QString &str)
 {
-    connPushButton->setText("Закрыть");
+    connPushButton->setText(tr("Close"));
     //qDebug() << "Port opened";
-    statusBar()->showMessage("Порт открыт: " + str);
+    statusBar()->showMessage(tr("Port is open:") + " " + str);
 }
 
 /**
@@ -339,10 +347,9 @@ void MainWindow::onPortOpened(const QString &str)
  */
 void MainWindow::onPortClosed()
 {
-    connPushButton->setText("Открыть");
-    //qDebug() << "Port closed";
+    connPushButton->setText(tr("Close"));
 
-    statusBar()->showMessage("Порт закрыт");
+    statusBar()->showMessage(tr("Port is closed"));
 }
 
 /**
@@ -360,7 +367,7 @@ void MainWindow::onWriteStatusBar(const QString &str, int timeout)
  */
 void MainWindow::onConnPushButton_clicked()
 {
-    if( connPushButton->text() != "Открыть" ) {
+    if( connPushButton->text() != tr("Open") ) {
         emit disconnectClicked();
     }
     else{
@@ -373,34 +380,34 @@ void MainWindow::onConnPushButton_clicked()
  */
 void MainWindow::onFindPushButton_clicked()
 {
-    if( connPushButton->text() == "Открыть" ){
-        QMessageBox::warning(this, tr("Порт закрыт"), "Откройте порт.");
+    if( connPushButton->text() == tr("Open") ){
+        QMessageBox::warning(this, tr("Port is closed"), tr("Open the port."));
     }
     else{
-        if( findPushButton->text() == "Поиск устройств" ){
+        if( findPushButton->text() == tr("Device search") ){
             listWidget->blockSignals(true);
             listWidget->clear();
             deviceListPointer.clear();
-            findPushButton->setText("Остановить поиск");
+            findPushButton->setText(tr("Stop searching"));
             connPushButton->setEnabled(false);
             findBar->setVisible(true);
             emit clearPacketQueue();
             emit resetDeviceData();
             listWidget->blockSignals(false);
-            statusBar()->showMessage("Выполняется поиск устройств...");
+            statusBar()->showMessage(tr("A search for devices is in progress..."));
             for(int i = 0; i < DEV_MAX_NUMBER; i++){
                 emit sendCommand(COMMAND_0, nullptr);
             }
         }
         else{
-            findPushButton->setText("Поиск устройств");
+            findPushButton->setText(tr("Device search"));
             findBar->setValue(0);
             findBar->setVisible(false);
             if( listWidget->count() == 0 ){
-                listWidget->addItem("Устройств не обнаружено");
+                listWidget->addItem(tr("No devices found"));
             }
             connPushButton->setEnabled(true);
-            statusBar()->showMessage("Поиск устройств остановлен", 3000);
+            statusBar()->showMessage(tr("Device search has been stopped"), 3000);
             emit sendCommand(STOP_CMD, nullptr);
         }
     }
@@ -498,7 +505,7 @@ void MainWindow::onManual_triggered()
     file.open(QIODevice::ReadOnly);
     QDialog* manualWindow = new QDialog(this);
     manualWindow->setObjectName("manualWindow");
-    manualWindow->setWindowTitle("Инструкция");
+    manualWindow->setWindowTitle(tr("Manual"));
     manualWindow->resize(700, 500);
     manualWindow->setWindowFlags(Qt::Drawer);
     manualWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -521,7 +528,7 @@ void MainWindow::onManual_triggered()
 void MainWindow::onAbout_triggered()
 {
     QDialog* aboutWindow = new QDialog(this);
-    aboutWindow->setWindowTitle("О программе");
+    aboutWindow->setWindowTitle("About");
     aboutWindow->resize(370, 200);
     aboutWindow->setModal(true);
     aboutWindow->setWindowFlags(Qt::Drawer);
@@ -531,8 +538,8 @@ void MainWindow::onAbout_triggered()
     QLabel* textLabel = new QLabel;
     QVBoxLayout* aboutLayot = new QVBoxLayout;
     textLabel->setText(tr("<h1>HART® Device Manager</h1>"
-                          "<p>Версия 1.5.2</p>"
-                          "<p>Программа для проверки и настройки приборов с протоколом HART.</p>"));
+                          "<p>Version 1.5.2</p>"
+                          "<p>A program for testing and configuring devices with the HART protocol.</p>"));
 
     aboutLayot->addWidget(logoLabel, 0, Qt::AlignCenter);
     aboutLayot->addWidget(textLabel, 0, Qt::AlignCenter);
@@ -542,13 +549,29 @@ void MainWindow::onAbout_triggered()
 }
 
 /**
+ * @brief MainWindow::onEn_triggered
+ */
+void MainWindow::onEn_triggered()
+{
+
+}
+
+/**
+ * @brief MainWindow::onRu_triggered
+ */
+void MainWindow::onRu_triggered()
+{
+
+}
+
+/**
  * @brief MainWindow::onShowPolligAddress
  * @param addr
  */
 void MainWindow::onShowPolligProgress(quint8 val)
 {
     findBar->setValue(val);
-    statusBar()->showMessage("Адрес опроса: "+QString::number(val), POLLING_TIMEOUT);
+    statusBar()->showMessage(tr("Survey address:") + " " + QString::number(val), POLLING_TIMEOUT);
 }
 
 /**
@@ -558,7 +581,7 @@ void MainWindow::onItemSelectionChanged()
 {
     findBar->setVisible(false);
     connPushButton->setEnabled(true);
-    findPushButton->setText("Поиск устройств");
+    findPushButton->setText(tr("Device search"));
     statusBar()->showMessage("");
 
     emit clearPacketQueue();
@@ -570,15 +593,15 @@ void MainWindow::onItemSelectionChanged()
  */
 void MainWindow::onSearchCompleted()
 {
-    findPushButton->setText("Поиск устройств");
+    findPushButton->setText(tr("Device search"));
     connPushButton->setEnabled(true);
     findBar->setValue(0);
     findBar->setVisible(false);
     if( listWidget->count() == 0 ){
-        listWidget->addItem("Устройств не обнаружено");
+        listWidget->addItem(tr("No devices found"));
     }
-    statusBar()->showMessage("Поиск устройств завершен", 3000);
-    QMessageBox::information(this, tr("Информация"), "Поиск завершен.");
+    statusBar()->showMessage(tr("The device search is complete"), 3000);
+    QMessageBox::information(this, tr("Information"), tr("The search is complete."));
 }
 
 /**
@@ -592,8 +615,8 @@ void MainWindow::onFillTableWidget(const QList<Device*> &list)
 
     deviceListPointer = list;
 
-    listWidget->addItem(QString::number(list.at(index)->getShortAddress())+
-                        ": Серийный № " +QString::number(list.at(index)->getSerial()) +
-                        "  Тип: "+QString::number(list.at(index)->getTypeCode(), 16).toUpper());
+    listWidget->addItem(QString::number(list.at(index)->getShortAddress()) +
+                        ": " + "Serial number" + " " +QString::number(list.at(index)->getSerial()) +
+                        " " + "Type:" + " " + QString::number(list.at(index)->getTypeCode(), 16).toUpper());
 }
 //eof

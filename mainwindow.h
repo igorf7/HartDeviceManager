@@ -24,35 +24,6 @@ public:
 
     QList<Device*> deviceListPointer;
 
-private:
-    ComPort* comPort = nullptr;
-    QThread* threadPort;
-    HartPro* hartPro = nullptr;
-    QGroupBox* listGroupBox;
-    QAction* primaryAct;
-    QAction* secondaryAct;
-    QTabWidget* mainTabWidget;
-    QPushButton* connPushButton;
-    QPushButton* findPushButton;
-    QProgressBar* findBar;
-    QComboBox* portComboBox;
-    QListWidget* listWidget;
-
-    QPointer<LoadViewer> loadViewer;
-    QPointer<ConfigViewer> configViewer;
-    QPointer<CalibViewer> calibViewer;
-    QPointer<MoniViewer> moniViewer;
-    QPointer<QVBoxLayout> tabLayout;
-
-    int currentTabIndex = 0;
-
-    enum{
-        LOADER_TAB_INDEX = 0,
-        CONFIG_TAB_INDEX,
-        CALIBR_TAB_INDEX,
-        MONITOR_TAB_INDEX
-    }mainTabIndexes;
-
 signals:
     void connectClicked(const QString &port);
     void disconnectClicked();
@@ -84,10 +55,41 @@ private slots:
     void onHardReset_triggered();
     void onManual_triggered();
     void onAbout_triggered();
+    void onEn_triggered();
+    void onRu_triggered();
     void onConnPushButton_clicked();
     void onFindPushButton_clicked();
     void onItemSelectionChanged();
     void onMainTabWidget_currentChanged(int index);
+
+private:
+    ComPort* comPort = nullptr;
+    QThread* threadPort;
+    HartPro* hartPro = nullptr;
+    QGroupBox* listGroupBox;
+    QAction* primaryAct;
+    QAction* secondaryAct;
+    QTabWidget* mainTabWidget;
+    QPushButton* connPushButton;
+    QPushButton* findPushButton;
+    QProgressBar* findBar;
+    QComboBox* portComboBox;
+    QListWidget* listWidget;
+
+    QPointer<LoadViewer> loadViewer;
+    QPointer<ConfigViewer> configViewer;
+    QPointer<CalibViewer> calibViewer;
+    QPointer<MoniViewer> moniViewer;
+    QPointer<QVBoxLayout> tabLayout;
+
+    int currentTabIndex = 0;
+
+    enum{
+        LOADER_TAB_INDEX = 0,
+        CONFIG_TAB_INDEX,
+        CALIBR_TAB_INDEX,
+        MONITOR_TAB_INDEX
+    }mainTabIndexes;
 };
 
 #endif // MAINWINDOW_H

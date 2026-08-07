@@ -12,10 +12,6 @@ public:
     explicit CalibViewer(QObject *parent = nullptr);
     ~CalibViewer();
     QGroupBox* calibGroupBox;
-    //int myTabIndex;
-
-private:    
-    //int currentTabIndex;
 
 signals:
 

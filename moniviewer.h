@@ -30,47 +30,6 @@ public:
     ~MoniViewer();
     QGroupBox* moniGroupBox;
 
-private:
-    Device* currentDevice;
-    QChart* chart;
-    QLineSeries* series;
-
-    static const quint8 prmNum = 6;
-    static const quint8 idNum = 3;
-    QLineEdit* idValueEdit[idNum];
-    QLineEdit* varLineEdit[prmNum];
-    QLabel* varUnitLabel[prmNum];
-    QSpinBox* pollTimeSpinBox;
-    QPushButton* startButton;
-    QLabel* queueSizeValue;
-    QCheckBox* pvOnlyCheckBox;
-
-    QDateTimeAxis* axisX;
-    QValueAxis* axisY;
-    QDateTime startDateTime, nextDateTime;
-    quint32 chartRangeSec;
-    qreal pvLowLim, pvHighLim,
-          pvValue, svValue, tvValue, qvValue;
-    int spinPV, spinAll;
-
-    enum{
-        serial = 0,
-        address,
-        type,
-        pv = 0,
-        sv,
-        tv,
-        qv,
-        percent,
-        current,
-        pv_unit = 0,
-        sv_unit,
-        tv_unit,
-        qv_unit,
-        perc_unit,
-        curr_unit
-    }widgetIndex;
-
 protected:
     int pollingTime;
     int pollTimeout;
@@ -94,6 +53,47 @@ private slots:
     void onStopButton_clicked();
     void onPvOnlyToggled(bool);
     void onValueChanged(int i);
+
+private:
+    Device* currentDevice;
+    QChart* chart;
+    QLineSeries* series;
+
+    static const quint8 prmNum = 6;
+    static const quint8 idNum = 3;
+    QLineEdit* idValueEdit[idNum];
+    QLineEdit* varLineEdit[prmNum];
+    QLabel* varUnitLabel[prmNum];
+    QSpinBox* pollTimeSpinBox;
+    QPushButton* startButton;
+    QLabel* queueSizeValue;
+    QCheckBox* pvOnlyCheckBox;
+
+    QDateTimeAxis* axisX;
+    QValueAxis* axisY;
+    QDateTime startDateTime, nextDateTime;
+    quint32 chartRangeSec;
+    qreal pvLowLim, pvHighLim,
+        pvValue, svValue, tvValue, qvValue;
+    int spinPV, spinAll;
+
+    enum{
+        serial = 0,
+        address,
+        type,
+        pv = 0,
+        sv,
+        tv,
+        qv,
+        percent,
+        current,
+        pv_unit = 0,
+        sv_unit,
+        tv_unit,
+        qv_unit,
+        perc_unit,
+        curr_unit
+    }widgetIndex;
 };
 
 #endif // MONIVIEWER_H

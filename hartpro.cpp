@@ -111,13 +111,9 @@ void HartPro::writeDataChunck(HartCommand_t cmd)
 
     if (dataBuffer.isEmpty()) {
         emit loadingComplete();
-        //qDebug() << "bufferSize = 0";
     }
     else {
         int bufferSize = dataBuffer.size();
-
-        //qDebug() << "bufferSize = " << bufferSize;
-
         if (bufferSize <= DATA_CHUNCK_SIZE) {
             dataChunck.append(dataBuffer);
             dataBuffer.clear();
@@ -272,8 +268,7 @@ void HartPro::onParsingPacket(const QByteArray &packet)
     }
 
     if (rcv_check != check_summ) {
-        //QMessageBox::warning(mainWidget, tr("Ошибка"), "Ошибка контрольной суммы пакета!");
-        //qDebug("Ошибка контрольной суммы пакета!");
+        ; //qDebug("Checksum error!");
     }
     else {
         emit writeStatusBar("Идёт обмен...", 1000);
@@ -281,7 +276,6 @@ void HartPro::onParsingPacket(const QByteArray &packet)
         {
             case POLING_ADDR_TYPE: // Short frame
                 rxShortFrame = reinterpret_cast<HartShortFrame_t*>(const_cast<char*>(packet.data()));
-                //qDebug("Short frame received.");
                 if (rxShortFrame->command == COMMAND_0) {
                     Device* newDevice = new Device(this);
                     newDevice->setShortAddress(rxShortFrame->address & 0x3F);
@@ -347,8 +341,8 @@ cmd_12:                if (rxLongFrame->data_len == MESSAGE_SIZE+2) {
                            emit transactionComplete(COMMAND_12, tmpArray);
                         }
                         else {
-                            QMessageBox::critical(mainWidget, tr("Ошибка"), "Некорректный размер данных в ответе.\n"
-                                                              "Код комады: "+QString::number(rxLongFrame->command));
+                            QMessageBox::critical(mainWidget, tr("Error"), tr("Incorrect data size in the response.\n")
+                                                              + tr("Command code:") + " " + QString::number(rxLongFrame->command));
                         }
                         break;
                     case COMMAND_13:
@@ -359,8 +353,8 @@ cmd_13:                 if (rxLongFrame->data_len == (TAG_SIZE+DESCRIPTOR_SIZE+D
                             emit transactionComplete(COMMAND_13, tmpArray);
                         }
                         else {
-                            QMessageBox::critical(mainWidget, tr("Ошибка"), "Некорректный размер данных в ответе.\n"
-                                                          "Код комады: "+QString::number(rxLongFrame->command));
+                            QMessageBox::critical(mainWidget, tr("Error"), tr("Incorrect data size in the response.\n")
+                                                          + tr("Command code:") + " " + QString::number(rxLongFrame->command));
                         }
                         break;
                     case COMMAND_15:
@@ -370,10 +364,10 @@ cmd_13:                 if (rxLongFrame->data_len == (TAG_SIZE+DESCRIPTOR_SIZE+D
                         emit transactionComplete(rxLongFrame->command, tmpArray);
                         break;
                     case COMMAND_17:
-                        emit writeStatusBar("Сообщение записано", 3000);
+                        emit writeStatusBar(tr("Message recorded"), 3000);
                         goto cmd_12;
                     case COMMAND_18:
-                        emit writeStatusBar("Тэг, дескриптор и дата записаны", 3000);
+                        emit writeStatusBar(tr("The tag, descriptor and date recorded"), 3000);
                         goto cmd_13;
                     case COMMAND_20:
 cmd_20:                 if (rxLongFrame->data_len == LONGTAG_SIZE+2) {
@@ -383,24 +377,24 @@ cmd_20:                 if (rxLongFrame->data_len == LONGTAG_SIZE+2) {
                             emit transactionComplete(COMMAND_20, tmpArray);
                         }
                         else {
-                            QMessageBox::critical(mainWidget, tr("Ошибка"), "Некорректный размер данных в ответе.\n"
-                                                          "Код комады: "+QString::number(rxLongFrame->command));
+                            QMessageBox::critical(mainWidget, tr("Error"), tr("Incorrect data size in the response.\n")
+                                                          + tr("Command code:") + " " + QString::number(rxLongFrame->command));
                         }
                         break;
                     case COMMAND_22:
-                        emit writeStatusBar("Длинный тэг записан", 3000);
+                        emit writeStatusBar(tr("Long tag recorded"), 3000);
                         goto cmd_20;
                     case COMMAND_34:
-                        emit writeStatusBar("Время демпфирования записано", 3000);
+                        emit writeStatusBar(tr("Damping time is recorded"), 3000);
                         break;
                     case COMMAND_35:
-                        emit writeStatusBar("Нижний и верхний пределы записаны", 3000);
+                        emit writeStatusBar(tr("Lower and upper limits are recorded"), 3000);
                         break;
                     case COMMAND_42:
-                        QMessageBox::information(mainWidget, tr("Подтверждение"), "Выполнен рестарт усторйства (reset).");
+                        QMessageBox::information(mainWidget, tr("Confirmation"), tr("Device has been restarted"));
                         break;
                     case COMMAND_44:
-                        emit writeStatusBar("Единицы измерения записаны", 3000);
+                        emit writeStatusBar(tr("Units of measurement are recorded"), 3000);
                         break;
                     case SET_UNIQUE_ID:
                         tmp = rxLongFrame->data[2]; tmp <<= 8;
@@ -431,7 +425,7 @@ cmd_20:                 if (rxLongFrame->data_len == LONGTAG_SIZE+2) {
                         emit transactionComplete(rxLongFrame->command, rxLongFrame->data[2]);
                         break;
                     case CLEAR_CONFIG:
-                        QMessageBox::information(mainWidget, tr("Подтверждение"), "Установлены заводские настройки.");
+                        QMessageBox::information(mainWidget, tr("Confirmation"), tr("The factory settings have been applied"));
                         break;
                     default:
                         break;
@@ -461,25 +455,25 @@ void HartPro::linkErrorHandler(quint8 err_code)
     switch (err_code)
     {
     case BUFF_OVER_ERR:
-        errMessage = "(Переполнен буфер приемника)";
+        errMessage = tr("(The receiver buffer is full)");
         break;
     case CHECKSUM_ERR:
-        errMessage = "(Ошибка контрольной суммы)";
+        errMessage = tr("(Checksum error)");
         break;
     case FRAMING_ERR:
-        errMessage = "(Ошибка формирования фрейма)";
+        errMessage = tr("(Frame formation error)");
         break;
     case OVERRUN_ERR:
-        errMessage = "(Ошибка переполнения)";
+        errMessage = tr("(Overflow error)");
         break;
     case PARITY_ERR:
-        errMessage = "(Ошибка по четности)";
+        errMessage = tr("(Parity error)");
         break;
     default:
-        errMessage = "(Код ошибки: " + QString::number(err_code)+")";
+        errMessage = tr("(Error code:") + " " + QString::number(err_code) + ")";
         break;
     }
-    QMessageBox::warning(mainWidget, tr("Ошибка"), "<h4>Ошибка передачи данных</h4>"+errMessage);
+    QMessageBox::warning(mainWidget, tr("Error"), "<h4>Data transmission error</h4>" + errMessage);
 }
 
 /**
@@ -490,31 +484,8 @@ void HartPro::linkErrorHandler(quint8 err_code)
 void HartPro::cmdRespHandler(quint8 err_code, quint8 cmd_code)
 {
     Q_UNUSED(cmd_code)
-//    QString errMessage = "";
 
-//            switch (err_code)
-//            {
-//                case TOO_FEW_BYTES:
-//                    errMessage = "Слишком мало байт данных";
-//                    break;
-//                case ACCESS_LIMITED:
-//                    errMessage = "Доступ ограничен";
-//                    break;
-//                case DEVICE_IS_BUSY:
-//                    errMessage = "Устройство занято";
-//                    break;
-//                case UNSUPPORTED_CMD:
-//                    errMessage = "Команда не поддерживается устройством или\n"
-//                                 "устройство не находится в нужном режиме.\n"
-//                                 "Код команды: "+QString::number(cmd_code);
-//                    break;
-//                default:
-//                    errMessage = "Код ошибки: " + QString::number(err_code);
-//                    break;
-//            }
-//            QMessageBox::information(mainWidget, tr("Ошибка"), "<h4>Ошибка выполнения команды</h4>"+errMessage);
-
-    emit writeStatusBar("Command Response Code: " + QString::number(err_code), 3000);
+    emit writeStatusBar(tr("Response code:") + " " + QString::number(err_code), 3000);
 }
 
 /**
@@ -535,16 +506,16 @@ void HartPro::devErrorHandler(quint8 err_code, quint8 cmd_code)
                 switch (err_code)
                 {
                 case flash_erase_err:
-                    errMessage = "Не удалось стереть FLASH";
+                    errMessage = tr("Failed to erase FLASH");
                     break;
                 case flash_write_err:
-                    errMessage = "Не удалось записать FLASH";
+                    errMessage = tr("Failed to write FLASH");
                     break;
                 case eeprom_write_err:
-                    errMessage = "Не удалось записать EEPROM";
+                    errMessage = tr("Failed to write to EEPROM");
                     break;
                 default:
-                    errMessage = "Код ошибки: " + QString::number(err_code);
+                    errMessage = tr("Error code:") + " " + QString::number(err_code);
                     break;
                 }
             }
@@ -552,7 +523,8 @@ void HartPro::devErrorHandler(quint8 err_code, quint8 cmd_code)
         default:
             break;
     }
-    QMessageBox::warning(mainWidget, tr("Ошибка"), "<h4>Сбой при работе с памятью устройства</h4>"+errMessage);
+    QMessageBox::warning(mainWidget, tr("Error"),
+                        "<h4>Failure when working with the device’s memory</h4>"+errMessage);
 }
 
 /**
@@ -572,7 +544,7 @@ void HartPro::timerEvent(QTimerEvent *event)
             checkPacketQueue();
         }
         else {
-            QMessageBox::information(mainWidget, tr("Сообщение"), "Устройство не отвечает.");
+            QMessageBox::information(mainWidget, tr("Message"), tr("The device is not responding"));
         }
     }
 }
@@ -610,7 +582,7 @@ bool HartPro::checkPacketQueue()
 
         if (packetQueue.size() > 64) {
             packetQueue.clear();
-            emit writeStatusBar("Очередь пакетов сброшена", 3000);
+            emit writeStatusBar(tr("The packet queue has been cleared"), 3000);
         }
 
         if (packet.at(0) & UNIQUE_ADDR_TYPE) {

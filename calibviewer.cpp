@@ -9,7 +9,7 @@
 CalibViewer::CalibViewer(QObject *parent) : QObject(parent)
 {
     calibGroupBox = new QGroupBox();
-    calibGroupBox->setTitle("Работа с устройствами в режиме калибровки");
+    calibGroupBox->setTitle(tr("Working with devices in calibration mode"));
     calibGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 

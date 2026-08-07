@@ -13,19 +13,19 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
 {
     currentDevice = nullptr;
     confGroupBox = new QGroupBox();
-    confGroupBox->setTitle("Работа с устройствами в режиме конфигурации");
+    confGroupBox->setTitle(tr("Working with devices in configuration mode"));
     confGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QStringList stringList;
     int i;
 
     /* GroupBox "Identificator" */
-    QGroupBox* idGroupBox = new QGroupBox("Идентификатор устройства", confGroupBox);
-    QLabel* shortAddrLabel = new QLabel("Короткий адрес");
+    QGroupBox* idGroupBox = new QGroupBox(tr("Device identifier"), confGroupBox);
+    QLabel* shortAddrLabel = new QLabel(tr("Short address"));
     shortAddrSpinBox = new QSpinBox();
-    QPushButton* shortAddrButton = new QPushButton("Записать");
+    QPushButton* shortAddrButton = new QPushButton(tr("Write"));
     shortAddrButton->setAutoDefault(true);
-    QLabel* fullAddrLabel = new QLabel("Полный адрес");
+    QLabel* fullAddrLabel = new QLabel(tr("Full address"));
     fullAddrLineEdit = new QLineEdit();
     fullAddrLineEdit->setReadOnly(true);
     shortAddrSpinBox->setMinimum(0);
@@ -41,15 +41,16 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
     idGroupBox->setLayout(idLayout);
 
     /* GrpupBox "Information" */
-    QGroupBox* infoGroupBox = new QGroupBox("Информация об устройстве", confGroupBox);
+    QGroupBox* infoGroupBox = new QGroupBox(tr("Information about the device"), confGroupBox);
     QLabel* info1Label[info1ColumnSize];
     QLabel* info2Label[info1ColumnSize];
     dateEdit = new QDateEdit;
     dateEdit->setCalendarPopup(true);
     dateEdit->setDate(QDate::currentDate());
 
-    stringList<<"Тэг"<<"Дескриптор"<<"Сообщение"<<"Длинный тэг"<<"Производитель"<<"Дистрибьютор"
-              <<"Серийный номер"<<"Тип устройства"<<"Название"<<"Версия HART"<<"Версия ПО"<<"Дата";
+    stringList << tr("Tag") << tr("Descriptor") << tr("Message") << tr("Long tag")
+               << tr("Manufacturer") << tr("Distributor") << tr("Serial number") << tr("Device type")
+               << tr("Title") << tr("HART version") << tr("Software version") << tr("Date");
 
     QGridLayout* grid1Layout = new QGridLayout;
     for (i = 0; i < info1ColumnSize; i++) {
@@ -72,7 +73,7 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
     grid2Layout->addWidget(info2Label[i]);
     grid2Layout->addWidget(dateEdit);
 
-    QRegularExpression regExp("^.{8}$");//, QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression regExp("^.{8}$");
     QValidator *validator = new QRegularExpressionValidator(regExp, this);
     info1LineEdit[0]->setValidator(validator); // validator for tag
     regExp.setPattern("^.{16}$");
@@ -89,9 +90,9 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
     infoLayout->addLayout(grid1Layout);
     infoLayout->addStretch();
     infoLayout->addLayout(grid2Layout);
-    QPushButton* infoReadButton = new QPushButton("Чтение");
+    QPushButton* infoReadButton = new QPushButton(tr("Read"));
     infoReadButton->setAutoDefault(true);
-    QPushButton* infoWriteButton = new QPushButton("Запись");
+    QPushButton* infoWriteButton = new QPushButton(tr("Write"));
     infoWriteButton->setAutoDefault(true);
     QHBoxLayout* inforwLayout = new QHBoxLayout;
     inforwLayout->addWidget(infoReadButton, 0, Qt::AlignRight);
@@ -102,16 +103,16 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
     infoGroupBox->setLayout(infoGroupLayout);
 
     /* GroupBox "Device Parameters" */
-    QGroupBox* prmGroupBox = new QGroupBox("Параметры устройства", confGroupBox);
+    QGroupBox* prmGroupBox = new QGroupBox(tr("Device parameters"), confGroupBox);
 
     QLabel* prm1Label[prmColumnSize];
     QLabel* prm2Label[prmColumnSize];
     QDoubleValidator* doubleValidator =  new QDoubleValidator(0.0, 1000.0, 5);
     doubleValidator->setNotation(QDoubleValidator::StandardNotation);
     stringList.clear();
-    stringList<<"Нижний предел 1-й пер."<<"Верхний предел 1-й пер."<<"Время демпфирования"
-              <<"Передаточная функция"<<"Ед. измерения 1-й пер."<<"Ед. измерения 2-й пер."
-              <<"Ед. измерения 3-й пер."<<"Ед. измерения 4-й пер.";
+    stringList << tr("Lower limit of the 1st var") << tr("Upper limit of the 1st var") << tr("Damping time")
+              << tr("Transfer function") << tr("1st variable Unit") << tr("2nd variable Unit")
+              << tr("3rd variable Unit") << tr("4th variable Unit");
 
     QGridLayout* grid4Layout = new QGridLayout;
     for (i = 0; i < prmColumnSize; i++) {
@@ -139,9 +140,9 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
     prmLayout->addLayout(grid3Layout);
     prmLayout->addStretch();
     prmLayout->addLayout(grid4Layout);
-    QPushButton* prmReadButton = new QPushButton("Чтение");
+    QPushButton* prmReadButton = new QPushButton(tr("Read"));
     prmReadButton->setAutoDefault(true);
-    QPushButton* prmWriteButton = new QPushButton("Запись");
+    QPushButton* prmWriteButton = new QPushButton(tr("Write"));
     prmWriteButton->setAutoDefault(true);
     QHBoxLayout* prmrwLayout = new QHBoxLayout;
     prmrwLayout->addWidget(prmReadButton, 0, Qt::AlignRight);
@@ -351,8 +352,8 @@ void ConfigViewer::onTransactionComplete(quint8 response, const QVariant &prm2)
     switch(response)
     {
         case COMMAND_6:
-            QMessageBox::information(confGroupBox, tr("Подтверждение"), "Короткий адрес записан.\n"
-                                                 "Новый адрес: "+QString::number(prm2.toInt()));
+        QMessageBox::information(confGroupBox, tr("Confirmation"), tr("Short address recorded.\n") +
+                                                tr("New address:") + " " + QString::number(prm2.toInt()));
             break;
         case COMMAND_9:
             tmpBuffer.append(prm2.toByteArray());
@@ -360,7 +361,7 @@ void ConfigViewer::onTransactionComplete(quint8 response, const QVariant &prm2)
                 k = 3 + i * 8;
                 if (tmpBuffer.size() >= (k+10)) {
                     unitComboBox[i]->setCurrentIndex(currentDevice->getUnitIndex(tmpBuffer.at(k)));
-                    if (unitComboBox[i]->currentText() == "не исп.") unitComboBox[i]->setEnabled(false);
+                    if (unitComboBox[i]->currentText() == tr("not used.")) unitComboBox[i]->setEnabled(false);
                 }
             }
             break;

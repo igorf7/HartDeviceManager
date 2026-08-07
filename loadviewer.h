@@ -23,19 +23,6 @@ public:
     ~LoadViewer();
     QGroupBox* loadGroupBox;
 
-private:
-    void createLoadStateWindow();
-
-    QPointer<QDialog> loadStateWindow;
-    QLineEdit* serialLineEdit;
-    QCheckBox* incCheckBox;
-    QString fileName;
-    QByteArray fwBuffer;
-    QProgressBar* writeBar;
-    quint32 serialNumber;
-    quint32 fwHashSum;
-    bool isLoadingComplete;
-
 signals:
     void sendCommand(HartCommand_t cmd, const QByteArray &cmd_data);
 
@@ -51,6 +38,19 @@ private slots:
     void onAppStartButton_clicked();
     void onLoadWinCloseButton_clicked();
     void onDialogFinished(int code);
+
+private:
+    void createLoadStateWindow();
+
+    QPointer<QDialog> loadStateWindow;
+    QLineEdit* serialLineEdit;
+    QCheckBox* incCheckBox;
+    QString fileName;
+    QByteArray fwBuffer;
+    QProgressBar* writeBar;
+    quint32 serialNumber;
+    quint32 fwHashSum;
+    bool isLoadingComplete;
 };
 
 #endif // LOADVIEWER_H

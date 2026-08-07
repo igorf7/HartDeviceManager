@@ -16,23 +16,23 @@ LoadViewer::LoadViewer(QObject *parent) : QObject(parent)
     isLoadingComplete = true;
 
     loadGroupBox = new QGroupBox();
-    QPushButton* fopenButton = new QPushButton("Файл:");
+    QPushButton* fopenButton = new QPushButton(tr("File:"));
     fopenButton->setAutoDefault(true);
     QLineEdit* fpathLineEdit = new QLineEdit();
     fpathLineEdit->setObjectName("fpathLineEdit");
-    QLabel* uniqIdLabel = new QLabel("Серийный номер устройства:");
+    QLabel* uniqIdLabel = new QLabel(tr("Device serial number:"));
     serialLineEdit = new QLineEdit;
     QIntValidator* validator = new QIntValidator(0, 16777215);
     serialLineEdit->setValidator(validator);
-    incCheckBox = new QCheckBox("Автоинкркмент");
-    QPushButton* checkMemButton = new QPushButton("   Проверить память   ");
+    incCheckBox = new QCheckBox(tr("Auto‑increment"));
+    QPushButton* checkMemButton = new QPushButton(tr("Check memory"));
     checkMemButton->setAutoDefault(true);
-    QPushButton* loadStartButton = new QPushButton("   Загрузить прошивку   ");
+    QPushButton* loadStartButton = new QPushButton(tr("Download firmware"));
     loadStartButton->setAutoDefault(true);
-    QPushButton* appStartButton = new QPushButton("   Старт устройства   ");
+    QPushButton* appStartButton = new QPushButton(tr("Device start"));
     appStartButton->setAutoDefault(true);
 
-    loadGroupBox->setTitle("Работа с устройствами в режиме загрузчика");
+    loadGroupBox->setTitle(tr("Working with devices in bootloader mode"));
     loadGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QHBoxLayout* hLayout1 = new QHBoxLayout;
@@ -89,11 +89,11 @@ void LoadViewer::createLoadStateWindow()
     loadStateWindow = new QDialog(loadGroupBox);
     QVBoxLayout* vLayout = new QVBoxLayout();
     QHBoxLayout* hLayout = new QHBoxLayout();
-    QLabel* eraseLabel = new QLabel("Стирание:");
+    QLabel* eraseLabel = new QLabel(tr("Erase:"));
     eraseLabel->setObjectName("eraseLabel");
-    QLabel* writeLabel = new QLabel("Запись:");
+    QLabel* writeLabel = new QLabel(tr("Write:"));
     writeLabel->setObjectName("writeLabel");
-    QLabel* resultLabel = new QLabel("Результат:");
+    QLabel* resultLabel = new QLabel(tr("Result:"));
     resultLabel->setObjectName("resultLabel");
     QProgressBar* eraseBar = new QProgressBar();
     eraseBar->setObjectName("eraseBar");
@@ -101,14 +101,13 @@ void LoadViewer::createLoadStateWindow()
     writeBar = new QProgressBar();
     //writeBar->setFixedHeight(16);
 
-    QPushButton* closeButton = new QPushButton("Закрыть");
+    QPushButton* closeButton = new QPushButton(tr("Close"));
     closeButton->setEnabled(false);
     closeButton->setObjectName("closeButton");
-    loadStateWindow->setWindowTitle("Загрузка прошивки");
-    //loadStateWindow->setGeometry(0, 0, 550, 156);
+    loadStateWindow->setWindowTitle(tr("Firmware loading"));
     loadStateWindow->resize(550, 156);
     loadStateWindow->setModal(true);
-    loadStateWindow->setWindowFlags(Qt::Tool);//( Qt::Window|Qt::WindowTitleHint|Qt::CustomizeWindowHint );
+    loadStateWindow->setWindowFlags(Qt::Tool);
     closeButton->setFixedWidth(80);
     vLayout->addWidget(eraseLabel);
     vLayout->addWidget(eraseBar);
@@ -155,7 +154,7 @@ void LoadViewer::onloadStartButton_clicked()
         serial = serialLineEdit->text().toUInt();
     }
     else{
-        QMessageBox::warning(loadGroupBox, tr("Ошибка"), "Не задан серийный номер.");
+        QMessageBox::warning(loadGroupBox, tr("Error"), tr("The serial number is not set"));
         return;
     }
 
@@ -168,18 +167,17 @@ void LoadViewer::onloadStartButton_clicked()
         emit sendCommand(SET_UNIQUE_ID, serialNum);
     }
     else{
-        QMessageBox::warning(loadGroupBox, tr("Ошибка"), "Файл не выбран.");
+        QMessageBox::warning(loadGroupBox, tr("Error"), tr("The file is not selected"));
         return;
     }
 
     if( !fwFile.open(QIODevice::ReadOnly) ) {
-        QMessageBox::warning(loadGroupBox, tr("Ошибка"), "Невозможно открыть файл.");
+        QMessageBox::warning(loadGroupBox, tr("Error"), tr("The file could not be opened"));
     }
     else{
-        //qDebug()<<"Открыт файл: "<<fileName;
         fwBuffer.clear();
         if( !fwFile.seek(0) ) {
-            // error!!!
+            ; // error!!!
         }
         fwBuffer = fwFile.readAll();
         while( fwBuffer.size() % 4 ){
@@ -208,7 +206,7 @@ void LoadViewer::onEraseComplete()
 
     /* Fill the erase progress bar */
     eraseBar->setValue(100);
-    eraseLabel->setText(eraseLabel->text()+" выполнено.");
+    eraseLabel->setText(eraseLabel->text() + " " + tr("completed."));
 
     emit sendCommand(WRITE_FLASH_FIRST, fwBuffer);
 }
@@ -224,10 +222,10 @@ void LoadViewer::onDialogFinished(int code)
     if( isLoadingComplete != true )
     {
         QMessageBox msgBox;
-        msgBox.setWindowTitle(tr("Подтверждение действия"));
-        msgBox.setText(tr("Хотите прервать загрузку?"));
-        QPushButton *yesButton = msgBox.addButton(tr("Да"), QMessageBox::AcceptRole);
-        msgBox.addButton(tr("Нет"), QMessageBox::AcceptRole);
+        msgBox.setWindowTitle(tr("Confirmation"));
+        msgBox.setText(tr("Do you want to interrupt the download?"));
+        QPushButton *yesButton = msgBox.addButton(tr("Yes"), QMessageBox::AcceptRole);
+        msgBox.addButton(tr("No"), QMessageBox::AcceptRole);
         msgBox.buttons().at(1)->setFocus();
 
         msgBox.exec();
@@ -284,37 +282,38 @@ void LoadViewer::onTransactionComplete(quint8 response, const QVariant &prm2)
             }
             if( fwHashSum == static_cast<quint32>(prm2.toInt()) ){
                 if( resultLabel!= nullptr ) {
-                    resultLabel->setText(resultLabel->text()+" загрузка завершена. Верификация пройдена."
-                                         +" Присвоен серийный номер: "+QString::number(serialNumber));                    
+                    resultLabel->setText(resultLabel->text() + " " + "Loading completed. Verification passed."
+                                         + " " + "A serial number has been assigned:" + " " + QString::number(serialNumber));
                 }
             }
             else{
-                QMessageBox::critical(loadGroupBox, tr("Ошибка"), "Ошибка верификации! Необходима перезапись.");
+                QMessageBox::critical(loadGroupBox, tr("Error"), tr("Verification error! Re‑write required."));
                 if( resultLabel != nullptr ) {
-                    resultLabel->setText(resultLabel->text()+" Ошибка верификации! Необходима перезапись.");
+                    resultLabel->setText(resultLabel->text() + " " + tr("Verification error! Re‑write required."));
                 }
             }
             break;
         case CHECK_MEMORY:
             if( static_cast<quint8>(prm2.toInt()) & 0x01 )
-                cnf_str = "ДА";
+                cnf_str = tr("YES");
             else
-                cnf_str = "НЕТ";
+                cnf_str = tr("NO");
             if( static_cast<quint8>(prm2.toInt()) & 0x02 )
-                clb_str = "ДА";
+                clb_str = tr("YES");
             else
-                clb_str = "НЕТ";
+                clb_str = tr("NO");
             if( static_cast<quint8>(prm2.toInt()) & 0x04 )
-                app_str = "ДА";
+                app_str = tr("YES");
             else
-                app_str = "НЕТ";
+                app_str = tr("NO");
 
-            QMessageBox::information(loadGroupBox, tr("Проверка памяти"),
-                                     "Данные в памяти устройства:\n"
-                                     "\n"
-                                     "Прошивка: " + app_str + "\n"
-                                     "Калибровка: " + clb_str + "\n"
-                                     "Конфигурация: " + cnf_str + "\n");
+            QMessageBox::information(loadGroupBox, tr("Memory check"),
+                                    tr("Data in the device’s memory:") +
+                                    "\n" +
+                                    "\n" +
+                                    tr("Firmware:") + " " + app_str + "\n" +
+                                    tr("Calibration:") + " " + clb_str + "\n" +
+                                    tr("Configuration:") + " " + cnf_str + "\n");
             break;
         default:
             break;
@@ -333,7 +332,7 @@ void LoadViewer::onLoadingComplete()
     fwBuffer.clear();
 
     if( writeLabel != nullptr ) {
-        writeLabel->setText(writeLabel->text()+" завершена.");
+        writeLabel->setText(writeLabel->text() + " " + tr("done."));
     }
     isLoadingComplete = true;
     emit sendCommand(CHECK_HASH_SUM, nullptr);

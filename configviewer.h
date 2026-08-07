@@ -22,6 +22,25 @@ public:
     ~ConfigViewer();
     QGroupBox* confGroupBox;
 
+protected:
+
+signals:
+    void sendCommand(HartCommand_t cmd, const QByteArray &cmd_data);
+    void setDeviceAddress(quint64 addr);
+    void clearPacketQueue();
+
+public slots:
+    void onTransactionComplete(quint8 response, const QVariant &prm2);
+    void onSelectDevice(Device *device);
+    void onResetDeviceData();
+
+private slots:
+    void onShortAddrButton_clicked();
+    void onInfoReadButton_clicked();
+    void onInfoWriteButton_clicked();
+    void onPrmReadButton_clicked();
+    void onPrmWriteButton_clicked();
+
 private:
     Device* currentDevice;
     QSpinBox* shortAddrSpinBox;
@@ -57,25 +76,6 @@ private:
 
     void packString(const QByteArray &str, QByteArray &packed_str);
     void unpackString(const QByteArray &str, QByteArray &unpacked_str);
-
-protected:
-
-signals:
-    void sendCommand(HartCommand_t cmd, const QByteArray &cmd_data);
-    void setDeviceAddress(quint64 addr);
-    void clearPacketQueue();
-
-public slots:
-    void onTransactionComplete(quint8 response, const QVariant &prm2);
-    void onSelectDevice(Device *device);
-    void onResetDeviceData();
-
-private slots:
-    void onShortAddrButton_clicked();
-    void onInfoReadButton_clicked();
-    void onInfoWriteButton_clicked();
-    void onPrmReadButton_clicked();
-    void onPrmWriteButton_clicked();
 };
 
 #endif // CONFIGVIEWER_H

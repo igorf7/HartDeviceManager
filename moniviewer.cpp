@@ -22,14 +22,14 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     int i;
 
     moniGroupBox = new QGroupBox();
-    moniGroupBox->setTitle("Работа с устройствами в режиме мониторинга");
+    moniGroupBox->setTitle(tr("Working with devices in monitoring mode"));
     moniGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     /* GroupBox "Identificator" */
-    QGroupBox* idGroupBox = new QGroupBox("Идентификатор", moniGroupBox);
+    QGroupBox* idGroupBox = new QGroupBox(tr("Identifier"), moniGroupBox);
     QLabel* idLabel[3];
     QHBoxLayout* idLayout = new QHBoxLayout;
-    stringList << "Серийный номер" << "Адрес" << "Тип";
+    stringList << tr("Serial number") << tr("Address") << tr("Type");
     for (i = 0; i < 3; i++) {
         idLabel[i] = new QLabel;
         idLabel[i]->setText(stringList.at(i));
@@ -42,15 +42,15 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     idGroupBox->setLayout(idLayout);
 
     /* GroupBox "Parameters" */
-    QGroupBox* prmGroupBox = new QGroupBox("Данные", moniGroupBox);
+    QGroupBox* prmGroupBox = new QGroupBox(tr("Data"), moniGroupBox);
     prmGroupBox->setMaximumWidth(210);
 
     QLabel* valueLabel[prmNum];
     QVBoxLayout* labelLayout2 = new QVBoxLayout;
     QVBoxLayout* editLayout1 = new QVBoxLayout;
     stringList.clear();
-    stringList<<"1-я переменная"<<"2-я переменная"<<"3-я переменная"
-                <<"4-я переменная"<<"% диапазона"<<"Ток";
+    stringList << tr("1st variable") << tr("2nd variable") << tr("3rd variable")
+               << tr("4th variable") << tr("% of the range") << tr("Current");
     QVBoxLayout* labelLayout1 = new QVBoxLayout;
     for (i = 0; i < prmNum; i++) {
         valueLabel[i] = new QLabel;
@@ -75,15 +75,15 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     h1Lauout->addLayout(labelLayout2);
     h1Lauout->addStretch();
 
-    startButton = new QPushButton("Старт");
+    startButton = new QPushButton(tr("Start"));
     startButton->setAutoDefault(true);
-    QPushButton* stopButton = new QPushButton("Стоп");
+    QPushButton* stopButton = new QPushButton(tr("Stop"));
     stopButton->setAutoDefault(true);
     QHBoxLayout* h2Lauout = new QHBoxLayout;
     h2Lauout->addWidget(startButton);
     h2Lauout->addWidget(stopButton);
 
-    QLabel* pollTimeLabel = new QLabel("Период опроса, мсек.");
+    QLabel* pollTimeLabel = new QLabel(tr("Poll period, ms"));
     QHBoxLayout* h3Lauout = new QHBoxLayout;
     pollTimeSpinBox = new QSpinBox();
     pollTimeSpinBox->setMinimum(1000);
@@ -94,7 +94,7 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     h3Lauout->addStretch();
     h3Lauout->addWidget(pollTimeSpinBox);
 
-    QLabel* queueSizeLabel = new QLabel("Пакетов в очереди:");
+    QLabel* queueSizeLabel = new QLabel(tr("Packets in queue:"));
     queueSizeValue = new QLabel("");
     QFont font;
     font.setItalic(true);
@@ -104,7 +104,7 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     h4Lauout->addWidget(queueSizeLabel);
     h4Lauout->addWidget(queueSizeValue);
 
-    pvOnlyCheckBox = new QCheckBox("Только 1-я переменная");
+    pvOnlyCheckBox = new QCheckBox(tr("Only 1st variable"));
     pvOnlyCheckBox->setChecked(false);
 
     QVBoxLayout* prmLayout = new QVBoxLayout;
@@ -116,12 +116,12 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     prmGroupBox->setLayout(prmLayout);
 
     /* GroupBox "Chart" */
-    QGroupBox* chartGroupBox = new QGroupBox("График", moniGroupBox);
+    QGroupBox* chartGroupBox = new QGroupBox(tr("Chart"), moniGroupBox);
     series = new QLineSeries(this);
     chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
-    chart->setTitle("Основной параметр");
+    chart->setTitle(tr("Main parameter"));
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     chart->setAnimationOptions(QChart::AllAnimations);
@@ -129,11 +129,11 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     startDateTime = QDateTime::currentDateTime();
     nextDateTime = startDateTime.addSecs(chartRangeSec);
     axisX->setRange(startDateTime, nextDateTime);
-    axisX->setFormat("hh:mm:ss");
-    axisX->setTitleText("Время");
+    axisX->setFormat(tr("hh:mm:ss"));
+    axisX->setTitleText(tr("Time"));
     axisY = new QValueAxis(this);
     axisY->setRange(0, 100);
-    axisY->setTitleText("Значение");
+    axisY->setTitleText(tr("Value"));
     axisY->setTickCount(9);
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
@@ -219,8 +219,8 @@ void MoniViewer::onSelectDevice(Device* device)
 void MoniViewer::onStartButton_clicked()
 {
     if (currentDevice == nullptr) {
-       QMessageBox::warning(moniGroupBox, tr("Не выбрано устройство"),
-                            "Выберите устройство в списке слева.");
+       QMessageBox::warning(moniGroupBox, tr("No device selected"),
+                            tr("Select the device from the list on the left"));
         return;
     }
 

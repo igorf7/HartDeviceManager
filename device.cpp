@@ -27,10 +27,11 @@ Device::Device(QObject *parent) : QObject(parent)
     deviceVarNum = 0;
     extendedStaus = 0;
 
-    funcList<<""<<"Линейная"<<"Корнеизвлекающая"<<"Корнеизвл.3-й степ"<<
-                    "Корнеизвл.3-й степ"<<"Спец. кривая"<<"Квадратичная";
+    funcList << "" << tr("Linear") << tr("Root‑extracting") << tr("Root extract 3rd degree")
+             << tr("Root extract 3rd degree") << tr("Special curve") << tr("Quadratic");
 
-    unitsList<<""<<"m/s"<<"m/s²"<<"°C"<<"°F"<<"°K"<<"Па"<<"кПа"<<"МПа"<<"кгс/см²"<<"Не исп.";
+    unitsList << tr("") << tr("m/s") << tr("m/s²") << tr("°C") << tr("°F") << tr("°K")
+              << tr("Pa") << tr("kPa") << tr("MPa") << tr("kgf/cm²") << tr("not used");
 
     unitsTable.insert(21, 1);
     unitsTable.insert(172, 2);
@@ -43,16 +44,16 @@ Device::Device(QObject *parent) : QObject(parent)
     unitsTable.insert(10, 9);
     unitsTable.insert(250, 10);
 
-    unitsStrTable.insert(21, "m/s");
-    unitsStrTable.insert(172, "m/s²");
-    unitsStrTable.insert(32, "°C");
-    unitsStrTable.insert(33, "°F");
-    unitsStrTable.insert(35, "°K");
-    unitsStrTable.insert(11, "Па");
-    unitsStrTable.insert(12, "кПа");
-    unitsStrTable.insert(237, "МПа");
-    unitsStrTable.insert(10, "кгс/см²");
-    unitsStrTable.insert(250, "Не исп.");
+    unitsStrTable.insert(21, tr("m/s"));
+    unitsStrTable.insert(172, tr("m/s²"));
+    unitsStrTable.insert(32, tr("°C"));
+    unitsStrTable.insert(33, tr("°F"));
+    unitsStrTable.insert(35, tr("°K"));
+    unitsStrTable.insert(11, tr("Pa"));
+    unitsStrTable.insert(12, tr("kPa"));
+    unitsStrTable.insert(237, tr("MPa"));
+    unitsStrTable.insert(10, tr("kgf/cm²"));
+    unitsStrTable.insert(250, tr("not used"));
 
     typeStrTable.insert(0xE42D, "V-318-i");
     vendorStrTable.insert(0x6116, "ALCONT Ltd");
