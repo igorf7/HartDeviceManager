@@ -1,6 +1,6 @@
 #include "calibviewer.h"
 
-#include <QDebug>
+//#include <QDebug>
 
 /**
  * @brief CalibViewer::CalibViewer constructor
@@ -19,7 +19,7 @@ CalibViewer::CalibViewer(QObject *parent) : QObject(parent)
 CalibViewer::~CalibViewer()
 {
     delete calibGroupBox;
-    qDebug()<<"~By-by from"<<this;
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**

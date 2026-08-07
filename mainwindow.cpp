@@ -4,7 +4,7 @@
 #include <QMenuBar>
 #include <QThread>
 #include <QMessageBox>
-#include <QDebug>
+//#include <QDebug>
 #include <QStatusBar>
 #include <QSerialPortInfo>
 #include <QSplitter>
@@ -14,7 +14,9 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QScreen>
+#include <QGuiApplication>
+#include <QFile>
 
 /**
  * @brief constructor
@@ -26,8 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     /* Main window widget */
     QWidget* mainWidget = new QWidget();
     QHBoxLayout* mainLayout = new QHBoxLayout(mainWidget);
-
-    setWindowIcon(QIcon(":/images/alc64x64_32.png"));
 
     /* Create menu bar */
     QAction* createFileAct = new QAction(tr("&Создать"), this);
@@ -204,7 +204,7 @@ MainWindow::~MainWindow()
     if(moniViewer) delete moniViewer;
     if(tabLayout) delete tabLayout;
     threadPort->quit();
-    qDebug()<<"~By-by from"<<this;
+//    qDebug()<<"~By-by from"<<this;
 }
 
 /**
@@ -295,7 +295,7 @@ void MainWindow::onMainTabWidget_currentChanged(int index)
         currentTabIndex = MONITOR_TAB_INDEX;
         break;
     default:
-        qDebug()<<"New Tab?";
+        //qDebug()<<"New Tab?";
         break;
     }
     mainTabWidget->widget(index)->setLayout(tabLayout);
@@ -330,7 +330,7 @@ void MainWindow::updatePortList()
 void MainWindow::onPortOpened(const QString &str)
 {
     connPushButton->setText("Закрыть");
-    qDebug() << "Port opened";
+    //qDebug() << "Port opened";
     statusBar()->showMessage("Порт открыт: " + str);
 }
 
@@ -340,7 +340,7 @@ void MainWindow::onPortOpened(const QString &str)
 void MainWindow::onPortClosed()
 {
     connPushButton->setText("Открыть");
-    qDebug() << "Port closed";
+    //qDebug() << "Port closed";
 
     statusBar()->showMessage("Порт закрыт");
 }

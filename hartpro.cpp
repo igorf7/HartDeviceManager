@@ -1,6 +1,5 @@
 #include "hartpro.h"
 
-#include <qdebug.h>
 #include <QThread>
 #include <QMessageBox>
 #include <QTimerEvent>
@@ -26,8 +25,8 @@ HartPro::HartPro(QObject *parent) : QObject(parent)
  * @brief HartPro::~HartPro destructor
  */
 HartPro::~HartPro()
-{        
-    qDebug()<<"~By-by from"<<this;
+{
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**
@@ -112,12 +111,12 @@ void HartPro::writeDataChunck(HartCommand_t cmd)
 
     if (dataBuffer.isEmpty()) {
         emit loadingComplete();
-        qDebug() << "bufferSize = 0";
+        //qDebug() << "bufferSize = 0";
     }
     else {
         int bufferSize = dataBuffer.size();
 
-        qDebug() << "bufferSize = " << bufferSize;
+        //qDebug() << "bufferSize = " << bufferSize;
 
         if (bufferSize <= DATA_CHUNCK_SIZE) {
             dataChunck.append(dataBuffer);
@@ -246,7 +245,7 @@ void HartPro::onSendCommand(HartCommand_t cmd, const QByteArray &cmd_data)
                 dataBuffer.clear();
             }
             this->onClearPacketQueue();
-            qDebug()<<"STOP_CMD";
+            //qDebug()<<"STOP_CMD";
             break;
         default:
             break;
@@ -274,7 +273,7 @@ void HartPro::onParsingPacket(const QByteArray &packet)
 
     if (rcv_check != check_summ) {
         //QMessageBox::warning(mainWidget, tr("Ошибка"), "Ошибка контрольной суммы пакета!");
-        qDebug("Ошибка контрольной суммы пакета!");
+        //qDebug("Ошибка контрольной суммы пакета!");
     }
     else {
         emit writeStatusBar("Идёт обмен...", 1000);
@@ -282,7 +281,7 @@ void HartPro::onParsingPacket(const QByteArray &packet)
         {
             case POLING_ADDR_TYPE: // Short frame
                 rxShortFrame = reinterpret_cast<HartShortFrame_t*>(const_cast<char*>(packet.data()));
-                qDebug("Short frame received.");
+                //qDebug("Short frame received.");
                 if (rxShortFrame->command == COMMAND_0) {
                     Device* newDevice = new Device(this);
                     newDevice->setShortAddress(rxShortFrame->address & 0x3F);
@@ -440,7 +439,7 @@ cmd_20:                 if (rxLongFrame->data_len == LONGTAG_SIZE+2) {
                 break;
             default:
                 // Wrong packet
-                qDebug("Wrong packet!");
+                //qDebug("Wrong packet!");
                 break;
         }
     }

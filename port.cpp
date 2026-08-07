@@ -1,7 +1,5 @@
 #include "port.h"
 
-#include <qdebug.h>
-
 /**
  * @brief ComPort::ComPort constructor.
  * @param parent
@@ -17,7 +15,7 @@ ComPort::ComPort(QObject *parent) :
 ComPort::~ComPort()
 {
     emit quitComPort();
-    qDebug()<<"~By-by from"<<this;
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**
@@ -51,8 +49,8 @@ void ComPort:: onConnectClicked(const QString &port) {
         }
     }
     else {
-        qDebug() << "ComPort::onConnectClicked()"
-                 << "serialPort.isOpen()";
+        // qDebug() << "ComPort::onConnectClicked()"
+        //          << "serialPort.isOpen()";
     }
 }
 

@@ -1,13 +1,10 @@
 #include "configviewer.h"
 #include "convert.h"
-
-#include <qdebug.h>
-#include <mem.h>
 #include <QThread>
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-
+#include <QRegularExpression>
 /**
  * @brief ConfigViewer::ConfigViewer constructor
  * @param parent
@@ -75,14 +72,14 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
     grid2Layout->addWidget(info2Label[i]);
     grid2Layout->addWidget(dateEdit);
 
-    QRegExp regExp("^.{8}$");
-    QValidator *validator = new QRegExpValidator(regExp, this);
+    QRegularExpression regExp("^.{8}$");//, QRegularExpression::CaseInsensitiveOption);
+    QValidator *validator = new QRegularExpressionValidator(regExp, this);
     info1LineEdit[0]->setValidator(validator); // validator for tag
     regExp.setPattern("^.{16}$");
-    validator = new QRegExpValidator(regExp, this);
+    validator = new QRegularExpressionValidator(regExp, this);
     info1LineEdit[1]->setValidator(validator); // validator for descriptor
     regExp.setPattern("^.{32}$");
-    validator = new QRegExpValidator(regExp, this);
+    validator = new QRegularExpressionValidator(regExp, this);
     info1LineEdit[2]->setValidator(validator); // validator for message
     info1LineEdit[3]->setValidator(validator); // validator for long tag
     info1LineEdit[4]->setReadOnly(true);
@@ -181,7 +178,7 @@ ConfigViewer::ConfigViewer(QObject *parent) : QObject(parent)
 ConfigViewer::~ConfigViewer()
 {
     delete confGroupBox;
-    qDebug()<<"~By-by from"<<this;
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**
@@ -241,7 +238,7 @@ void ConfigViewer::onInfoWriteButton_clicked()
     QByteArray pack_str;
 
     /* Write message (Command 17) */
-    str.append(info1LineEdit[message]->text().toUpper());
+    str.append(info1LineEdit[message]->text().toUtf8().toUpper());
     while(str.size() < 32)
     {
         str.append(' ');
@@ -254,7 +251,7 @@ void ConfigViewer::onInfoWriteButton_clicked()
     /* Write tag, descriptor and date (Command 18) */
     str.clear();
     pack_str.clear();
-    str.append(info1LineEdit[tag]->text().toUpper());
+    str.append(info1LineEdit[tag]->text().toUtf8().toUpper());
     info1LineEdit[tag]->setText("");
     while(str.size() < 8)
     {
@@ -262,7 +259,7 @@ void ConfigViewer::onInfoWriteButton_clicked()
     }
     packString(str, pack_str);
     str.clear();
-    str.append(info1LineEdit[descriptor]->text().toUpper());
+    str.append(info1LineEdit[descriptor]->text().toUtf8().toUpper());
     info1LineEdit[descriptor]->setText("");
     while(str.size() < 16)
     {
@@ -281,7 +278,7 @@ void ConfigViewer::onInfoWriteButton_clicked()
 
     /* Write long tag (Command 22) */
     str.clear();
-    str.append(info1LineEdit[longTag]->text());
+    str.append(info1LineEdit[longTag]->text().toUtf8());
     info1LineEdit[longTag]->setText("");
     while(str.size() < 32)
     {

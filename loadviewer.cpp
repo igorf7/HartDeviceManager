@@ -3,7 +3,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDebug>
+//#include <QDebug>
 #include <QDialog>
 #include <QIntValidator>
 
@@ -69,7 +69,7 @@ LoadViewer::LoadViewer(QObject *parent) : QObject(parent)
 LoadViewer::~LoadViewer()
 {    
     delete loadGroupBox;
-    qDebug()<<"~By-by from"<<this;
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**
@@ -176,7 +176,7 @@ void LoadViewer::onloadStartButton_clicked()
         QMessageBox::warning(loadGroupBox, tr("Ошибка"), "Невозможно открыть файл.");
     }
     else{
-        qDebug()<<"Открыт файл: "<<fileName;
+        //qDebug()<<"Открыт файл: "<<fileName;
         fwBuffer.clear();
         if( !fwFile.seek(0) ) {
             // error!!!
@@ -221,21 +221,21 @@ void LoadViewer::onDialogFinished(int code)
 {
     Q_UNUSED(code);
 
-    if( isLoadingComplete != true ){
-        QMessageBox msg;
-        msg.setText("Ну что вы хулиганиити...ети..та?!");
-        msg.setInformativeText("Хотите прервать загрузку?");
-        msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msg.setIcon(QMessageBox::Question);
-        msg.setDefaultButton(QMessageBox::No);
-        msg.setButtonText(QMessageBox::Yes, "Да");
-        msg.setButtonText(QMessageBox::No, "Нет");
+    if( isLoadingComplete != true )
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Подтверждение действия"));
+        msgBox.setText(tr("Хотите прервать загрузку?"));
+        QPushButton *yesButton = msgBox.addButton(tr("Да"), QMessageBox::AcceptRole);
+        msgBox.addButton(tr("Нет"), QMessageBox::AcceptRole);
+        msgBox.buttons().at(1)->setFocus();
 
-        int res = msg.exec();
-        if (res != QMessageBox::Yes){
+        msgBox.exec();
+
+        if (msgBox.clickedButton() != yesButton) {
             loadStateWindow->show();
         }
-        else{
+        else {
             quint32 serial = serialLineEdit->text().toUInt();
             serialLineEdit->setText(QString::number(serial-1));
             onLoadWinCloseButton_clicked();

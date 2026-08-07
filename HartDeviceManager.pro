@@ -40,7 +40,7 @@ SOURCES += \
 HEADERS += \
     calibviewer.h \
     loadviewer.h \
-        mainwindow.h \
+    mainwindow.h \
     hart.h \
     hartpro.h \
     moniviewer.h \
@@ -61,6 +61,8 @@ win32:{
     QMAKE_TARGET_PRODUCT = HART DEVICE MANAGER
     QMAKE_TARGET_COPYRIGHT = Igor Filippov
 }
+
+DESTDIR = ../../Binary
 
 RESOURCES += \
     res.qrc

@@ -20,7 +20,7 @@
 #include <QDateTimeAxis>
 #include "device.h"
 
-QT_CHARTS_USE_NAMESPACE
+//QT_CHARTS_USE_NAMESPACE
 
 class MoniViewer : public QObject
 {

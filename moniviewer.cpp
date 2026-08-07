@@ -1,7 +1,7 @@
 #include "moniviewer.h"
 #include "convert.h"
 
-#include <QDebug>
+//#include <QDebug>
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -135,8 +135,10 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
     axisY->setRange(0, 100);
     axisY->setTitleText("Значение");
     axisY->setTickCount(9);
-    chart->setAxisX(axisX, series);
-    chart->setAxisY(axisY, series);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
     QVBoxLayout* chartLayout = new QVBoxLayout;
     chartLayout->addWidget(chartView);
     chartGroupBox->setLayout(chartLayout);
@@ -172,7 +174,7 @@ MoniViewer::MoniViewer(QObject *parent) : QObject(parent)
 MoniViewer::~MoniViewer()
 {    
     delete moniGroupBox;
-    qDebug()<<"~By-by from"<<this;
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**
@@ -217,8 +219,8 @@ void MoniViewer::onSelectDevice(Device* device)
 void MoniViewer::onStartButton_clicked()
 {
     if (currentDevice == nullptr) {
-//        QMessageBox::warning(moniGroupBox, tr("Не выбрано устройство"),
-//                             "Выберите устройство в списке слева.");
+       QMessageBox::warning(moniGroupBox, tr("Не выбрано устройство"),
+                            "Выберите устройство в списке слева.");
         return;
     }
 
@@ -267,13 +269,13 @@ void MoniViewer::onTransactionComplete(quint8 response, const QVariant &prm2)
             tmpBuffer.append(prm2.toByteArray());
             varUnitLabel[pv_unit]->setText(currentDevice->getUnitStr(static_cast<quint8>(tmpBuffer[0])));
             pvValue = static_cast<double>(ByteArrayToFloat(tmpBuffer, 1));
-            varLineEdit[pv]->setText(str.sprintf("%.3f", pvValue));
+            varLineEdit[pv]->setText(QString::number(pvValue, 'f', 3));
             break;
         case COMMAND_2:
             if (pvOnlyCheckBox->isChecked()) break;
             tmpBuffer.append(prm2.toByteArray());
-            varLineEdit[current]->setText(str.sprintf("%.2f", static_cast<double>(ByteArrayToFloat(tmpBuffer, 0))));
-            varLineEdit[percent]->setText(str.sprintf("%.1f", static_cast<double>(ByteArrayToFloat(tmpBuffer, 4))));
+            varLineEdit[current]->setText(QString::number(static_cast<double>(ByteArrayToFloat(tmpBuffer, 0)), 'f', 2));
+            varLineEdit[percent]->setText(QString::number(static_cast<double>(ByteArrayToFloat(tmpBuffer, 4)), 'f', 1));
             varUnitLabel[curr_unit]->setText("mA");
             varUnitLabel[perc_unit]->setText("%");
             break;
@@ -284,10 +286,10 @@ void MoniViewer::onTransactionComplete(quint8 response, const QVariant &prm2)
             svValue = static_cast<double>(ByteArrayToFloat(tmpBuffer, 12));
             tvValue = static_cast<double>(ByteArrayToFloat(tmpBuffer, 20));
             qvValue = static_cast<double>(ByteArrayToFloat(tmpBuffer, 28));
-            varLineEdit[pv]->setText(str.sprintf("%.3f", pvValue));
-            varLineEdit[sv]->setText(str.sprintf("%.3f", svValue));
-            varLineEdit[tv]->setText(str.sprintf("%.3f", tvValue));
-            varLineEdit[qv]->setText(str.sprintf("%.3f", qvValue));
+            varLineEdit[pv]->setText(QString::number(pvValue, 'f', 3));
+            varLineEdit[sv]->setText(QString::number(svValue, 'f', 3));
+            varLineEdit[tv]->setText(QString::number(tvValue, 'f', 3));
+            varLineEdit[qv]->setText(QString::number(qvValue, 'f', 3));
             varUnitLabel[pv_unit]->setText(currentDevice->getUnitStr(static_cast<quint8>(tmpBuffer[3])));
             varUnitLabel[sv_unit]->setText(currentDevice->getUnitStr(static_cast<quint8>(tmpBuffer[11])));
             varUnitLabel[tv_unit]->setText(currentDevice->getUnitStr(static_cast<quint8>(tmpBuffer[19])));

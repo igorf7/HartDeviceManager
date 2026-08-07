@@ -1,6 +1,6 @@
 #include "device.h"
 
-#include <QDebug>
+//#include <QDebug>
 /**
  * @brief Device::Device constructor
  * @param parent
@@ -64,7 +64,7 @@ Device::Device(QObject *parent) : QObject(parent)
  */
 Device::~Device()
 {
-    qDebug()<<"~By-by from"<<this;
+    //qDebug()<<"~By-by from"<<this;
 }
 
 /**

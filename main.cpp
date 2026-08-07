@@ -3,12 +3,14 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow* mainWindow = new MainWindow();
+    QApplication app(argc, argv);
 
-    mainWindow->resize(886, 575);
-    mainWindow->setAttribute(Qt::WA_DeleteOnClose);
-    mainWindow->show();
+    app.setOrganizationName("igorf7");
+    app.setOrganizationDomain("igorf7.com");
+    app.setApplicationName("Encoder");
 
-    return a.exec();
+    MainWindow w;
+    w.resize(900, 600);
+    w.show();
+    return QApplication::exec();
 }

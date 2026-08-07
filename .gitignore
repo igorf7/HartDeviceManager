@@ -1,0 +1,13 @@
+*.DS_Store
+._*
+*.
+!.gitignore
+.qtcreator/
+build/
+Binary/
+*.user
+*.user*
+*.zip
+*.ini
+*.csv
+*.bat
