@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 
     app.setOrganizationName("igorf7");
     app.setOrganizationDomain("igorf7.com");
-    app.setApplicationName("Encoder");
+    app.setApplicationName("HartDeviceManager");
 
     MainWindow w;
     w.resize(900, 600);
