@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>images/img.png</file>
         <file>text/manual.txt</file>
+        <file>translations/HartDeviceManager_en.qm</file>
+        <file>translations/HartDeviceManager_ru.qm</file>
     </qresource>
 </RCC>

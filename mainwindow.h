@@ -10,9 +10,11 @@
 #include "moniviewer.h"
 #include <QMainWindow>
 #include <QComboBox>
+#include <QList>
 #include <QListWidget>
 #include <QListView>
 #include <QPointer>
+#include <QTranslator>
 
 class MainWindow : public QMainWindow
 {
@@ -82,6 +84,10 @@ private:
     QPointer<MoniViewer> moniViewer;
     QPointer<QVBoxLayout> tabLayout;
 
+    QString lang_code = "";
+
+    QTranslator *langTranslator = nullptr;
+
     int currentTabIndex = 0;
 
     enum{
@@ -90,6 +96,10 @@ private:
         CALIBR_TAB_INDEX,
         MONITOR_TAB_INDEX
     }mainTabIndexes;
+
+    void changeLanguage(const QString &lang);
+    void readSettings();
+    void writeSettings();
 };
 
 #endif // MAINWINDOW_H

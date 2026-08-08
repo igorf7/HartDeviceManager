@@ -12,11 +12,14 @@
 #include <QHBoxLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QRadioButton>
 #include <QTextEdit>
 #include <QApplication>
 #include <QScreen>
 #include <QGuiApplication>
+#include <QProcess>
 #include <QFile>
+#include <QSettings>
 
 /**
  * @brief constructor
@@ -25,6 +28,18 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    this->readSettings();
+
+    if (lang_code.isEmpty()) {
+        QString loc_str = QLocale::system().name();
+        if ((loc_str == "ru_RU") || (loc_str.startsWith("ru")))
+            lang_code = "ru";
+        else
+            lang_code = "en";
+    }
+
+    this->changeLanguage(lang_code);
+
     /* Main window widget */
     QWidget* mainWidget = new QWidget();
     QHBoxLayout* mainLayout = new QHBoxLayout(mainWidget);
@@ -93,7 +108,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     /* Setup left panel group widgets */
     QWidget* leftPanel = new QGroupBox(mainWidget); // container for left panel
-///    leftPanel->setFixedWidth(255);
 
     portComboBox = new QComboBox;
     connPushButton = new QPushButton(tr("Open"));
@@ -197,7 +211,7 @@ MainWindow::MainWindow(QWidget *parent)
     threadPort->start(); // Start ComPort thread
     this->updatePortList();
 
-    this->setWindowTitle("HART® Device Manager");
+    this->setWindowTitle("HART Device Manager");
     this->onMainTabWidget_currentChanged(LOADER_TAB_INDEX);
 }
 
@@ -205,7 +219,9 @@ MainWindow::MainWindow(QWidget *parent)
  * @brief destructor
  */
 MainWindow::~MainWindow()
-{        
+{
+    this->writeSettings();
+
     if(loadViewer) delete loadViewer;
     if(configViewer) delete configViewer;
     if(calibViewer) delete calibViewer;
@@ -213,6 +229,11 @@ MainWindow::~MainWindow()
     if(tabLayout) delete tabLayout;
     threadPort->quit();
 //    qDebug()<<"~By-by from"<<this;
+}
+
+void restartApplication() {
+    QCoreApplication::quit();
+    QProcess::startDetached(QCoreApplication::applicationFilePath(), QStringList());
 }
 
 /**
@@ -314,6 +335,38 @@ void MainWindow::onMainTabWidget_currentChanged(int index)
     }
 }
 
+/**
+ * @brief MainWindow::onChangeLanguage
+ * @param lang
+ */
+void MainWindow::changeLanguage(const QString &lang)
+{
+    QString trFile;
+
+    if (langTranslator != nullptr) {
+        qApp->removeTranslator(langTranslator);
+        delete langTranslator;
+        langTranslator = nullptr;
+    }
+
+    langTranslator = new QTranslator(this);
+
+    if (lang == "ru") {
+        trFile = ":/translations/HartDeviceManager_ru.qm";
+    }
+    else {
+        trFile = ":/translations/HartDeviceManager_en.qm";
+    }
+
+    if (langTranslator->load(trFile)) {
+        qApp->installTranslator(langTranslator);
+    }
+}
+
+/**
+ * @brief MainWindow::onPortError
+ * @param msg
+ */
 void MainWindow::onPortError(const QString &msg)
 {
     QMessageBox::warning(this, tr("Error"), msg);
@@ -502,24 +555,24 @@ void MainWindow::onManual_triggered()
     }
 
     QFile file(":text/manual.txt");
-    file.open(QIODevice::ReadOnly);
-    QDialog* manualWindow = new QDialog(this);
-    manualWindow->setObjectName("manualWindow");
-    manualWindow->setWindowTitle(tr("Manual"));
-    manualWindow->resize(700, 500);
-    manualWindow->setWindowFlags(Qt::Drawer);
-    manualWindow->setAttribute(Qt::WA_DeleteOnClose);
-    QVBoxLayout* manualLayot = new QVBoxLayout;
-    QTextEdit* textEdit = new QTextEdit;
-    textEdit->setReadOnly(true);
-    manualLayot->addWidget(textEdit);
-    manualWindow->setLayout(manualLayot);
-    QTextStream in(&file);
-    QString line = in.readAll();
-    textEdit->setPlainText(line);
-    file.close();
-
-    manualWindow->show();
+    if (file.open(QIODevice::ReadOnly)) {
+        QDialog* manualWindow = new QDialog(this);
+        manualWindow->setObjectName("manualWindow");
+        manualWindow->setWindowTitle(tr("Manual"));
+        manualWindow->resize(700, 500);
+        manualWindow->setWindowFlags(Qt::Drawer);
+        manualWindow->setAttribute(Qt::WA_DeleteOnClose);
+        QVBoxLayout* manualLayot = new QVBoxLayout;
+        QTextEdit* textEdit = new QTextEdit;
+        textEdit->setReadOnly(true);
+        manualLayot->addWidget(textEdit);
+        manualWindow->setLayout(manualLayot);
+        QTextStream in(&file);
+        QString line = in.readAll();
+        textEdit->setPlainText(line);
+        file.close();
+        manualWindow->show();
+    }
 }
 
 /**
@@ -537,7 +590,7 @@ void MainWindow::onAbout_triggered()
 
     QLabel* textLabel = new QLabel;
     QVBoxLayout* aboutLayot = new QVBoxLayout;
-    textLabel->setText(tr("<h1>HART® Device Manager</h1>"
+    textLabel->setText(tr("<h1>HART Device Manager</h1>"
                           "<p>Version 1.5.2</p>"
                           "<p>A program for testing and configuring devices with the HART protocol.</p>"));
 
@@ -553,7 +606,8 @@ void MainWindow::onAbout_triggered()
  */
 void MainWindow::onEn_triggered()
 {
-
+    lang_code = "en";
+    restartApplication();
 }
 
 /**
@@ -561,7 +615,8 @@ void MainWindow::onEn_triggered()
  */
 void MainWindow::onRu_triggered()
 {
-
+    lang_code = "ru";
+    restartApplication();
 }
 
 /**
@@ -615,8 +670,31 @@ void MainWindow::onFillTableWidget(const QList<Device*> &list)
 
     deviceListPointer = list;
 
-    listWidget->addItem(QString::number(list.at(index)->getShortAddress()) +
-                        ": " + "Serial number" + " " +QString::number(list.at(index)->getSerial()) +
-                        " " + "Type:" + " " + QString::number(list.at(index)->getTypeCode(), 16).toUpper());
+    listWidget->addItem(QString::number(list.at(index)->getShortAddress())+
+                        ":" + tr("Serial number") + " " + QString::number(list.at(index)->getSerial()) +
+                        "  " + tr("Type:") + " "+ QString::number(list.at(index)->getTypeCode(), 16).toUpper());
 }
-//eof
+
+/**
+ * @brief MainWindow::readSettings
+ */
+void MainWindow::readSettings()
+{
+    QSettings settings("settings.ini", QSettings::IniFormat);
+
+    settings.beginGroup("/Main");
+    lang_code = settings.value("/lang_code", "").toString();
+    settings.endGroup();
+}
+
+/**
+ * @brief MainWindow::writeSettings
+ */
+void MainWindow::writeSettings()
+{
+    QSettings settings("settings.ini", QSettings::IniFormat);
+
+    settings.beginGroup("/Main");
+    settings.setValue("/lang_code", lang_code);
+    settings.endGroup();
+}

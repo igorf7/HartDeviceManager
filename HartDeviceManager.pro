@@ -62,6 +62,9 @@ win32:{
     QMAKE_TARGET_COPYRIGHT = Igor Filippov
 }
 
+TRANSLATIONS = translations/HartDeviceManager_en.ts \
+               translations/HartDeviceManager_ru.ts
+
 DESTDIR = ../../Binary
 
 RESOURCES += \

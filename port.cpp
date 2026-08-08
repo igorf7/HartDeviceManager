@@ -23,7 +23,7 @@ ComPort::~ComPort()
  */
 void ComPort:: onPortStart()
 {
-    qDebug("Hello from comPort Thread!");
+    //qDebug("Hello from comPort Thread!");
     /* Connect signals with slots */
     connect(&serialPort, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 }
