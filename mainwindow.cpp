@@ -680,7 +680,9 @@ void MainWindow::onFillTableWidget(const QList<Device*> &list)
  */
 void MainWindow::readSettings()
 {
-    QSettings settings("settings.ini", QSettings::IniFormat);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                       QCoreApplication::organizationName(),
+                       QCoreApplication::applicationName());
 
     settings.beginGroup("/Main");
     lang_code = settings.value("/lang_code", "").toString();
@@ -692,7 +694,9 @@ void MainWindow::readSettings()
  */
 void MainWindow::writeSettings()
 {
-    QSettings settings("settings.ini", QSettings::IniFormat);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+                       QCoreApplication::organizationName(),
+                       QCoreApplication::applicationName());
 
     settings.beginGroup("/Main");
     settings.setValue("/lang_code", lang_code);
