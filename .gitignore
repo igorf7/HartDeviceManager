@@ -5,6 +5,7 @@
 .qtcreator/
 build/
 Binary/
+*.ts
 *.user
 *.user*
 *.zip
