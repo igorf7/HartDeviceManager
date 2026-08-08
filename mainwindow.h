@@ -89,13 +89,14 @@ private:
     QTranslator *langTranslator = nullptr;
 
     int currentTabIndex = 0;
+    int savedTabIndex = 0;
 
-    enum{
+    enum {
         LOADER_TAB_INDEX = 0,
         CONFIG_TAB_INDEX,
-        CALIBR_TAB_INDEX,
-        MONITOR_TAB_INDEX
-    }mainTabIndexes;
+        MONITOR_TAB_INDEX,
+        CALIBR_TAB_INDEX
+    } mainTabIndexes;
 
     void changeLanguage(const QString &lang);
     void readSettings();

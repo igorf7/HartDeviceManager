@@ -55,13 +55,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:{
-    VERSION = 1.5
-    QMAKE_TARGET_COMPANY = FIV
-    QMAKE_TARGET_PRODUCT = HART DEVICE MANAGER
-    QMAKE_TARGET_COPYRIGHT = Igor Filippov
-}
-
 TRANSLATIONS = translations/HartDeviceManager_en.ts \
                translations/HartDeviceManager_ru.ts
 
@@ -69,5 +62,6 @@ DESTDIR = ../../Binary
 
 RESOURCES += \
     res.qrc
-win32: RC_ICONS = $$PWD/images/img.ico
+
+win32: RC_ICONS = $$PWD/images/appico.ico
 

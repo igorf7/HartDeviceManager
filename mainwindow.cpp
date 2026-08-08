@@ -152,17 +152,15 @@ MainWindow::MainWindow(QWidget *parent)
     mainTabWidget = new QTabWidget(mainWidget); // container for the viewers
     QWidget* loaderTab = new QWidget;   // loader viewer
     QWidget* configTab = new QWidget;   // configuration viewer
-    QWidget* calibTab = new QWidget;    // calibration viewer
     QWidget* moniTab = new QWidget;     // monitor viewer
+    QWidget* calibTab = new QWidget;    // calibration viewer
+
     mainTabWidget->addTab(loaderTab, tr("Loader"));
     mainTabWidget->addTab(configTab, tr("Configuration"));
-    mainTabWidget->addTab(calibTab, tr("Calibration"));
     mainTabWidget->addTab(moniTab, tr("Monitoring"));
+    mainTabWidget->addTab(calibTab, tr("Calibration"));
 
     /* Set mainWidget as central widget */
-///    mainLayout->addWidget(leftPanel, 0, Qt::AlignLeft);
-///    mainLayout->addWidget(mainTabWidget);
-///    mainWidget->setLayout(mainLayout);
     QSplitter *splitter = new QSplitter(mainWidget);
     splitter->addWidget(leftPanel);
     splitter->addWidget(mainTabWidget);
@@ -299,13 +297,6 @@ void MainWindow::onMainTabWidget_currentChanged(int index)
         QObject::connect(this, &MainWindow::resetDeviceData, configViewer, &ConfigViewer::onResetDeviceData);
         currentTabIndex = CONFIG_TAB_INDEX;
         break;
-    case CALIBR_TAB_INDEX:
-        calibViewer = new CalibViewer; // Create CalibViewer class instance
-        tabLayout->addWidget(calibViewer->calibGroupBox);
-        mainTabWidget->widget(CALIBR_TAB_INDEX)->setLayout(tabLayout);
-        QObject::connect(this, &MainWindow::resetDeviceData, calibViewer, &CalibViewer::onResetDeviceData);
-        currentTabIndex = CALIBR_TAB_INDEX;
-        break;
     case MONITOR_TAB_INDEX:
         moniViewer = new MoniViewer; // Create MoniViewer class instance
         tabLayout->addWidget(moniViewer->moniGroupBox);
@@ -322,6 +313,13 @@ void MainWindow::onMainTabWidget_currentChanged(int index)
         QObject::connect(hartPro, &HartPro::showPacketSize, moniViewer, &MoniViewer::onShowPacketSize);
         QObject::connect(this, &MainWindow::resetDeviceData, moniViewer, &MoniViewer::onResetDeviceData);
         currentTabIndex = MONITOR_TAB_INDEX;
+        break;
+    case CALIBR_TAB_INDEX:
+        calibViewer = new CalibViewer; // Create CalibViewer class instance
+        tabLayout->addWidget(calibViewer->calibGroupBox);
+        mainTabWidget->widget(CALIBR_TAB_INDEX)->setLayout(tabLayout);
+        QObject::connect(this, &MainWindow::resetDeviceData, calibViewer, &CalibViewer::onResetDeviceData);
+        currentTabIndex = CALIBR_TAB_INDEX;
         break;
     default:
         //qDebug()<<"New Tab?";
