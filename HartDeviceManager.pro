@@ -63,5 +63,3 @@ DESTDIR = ../../Binary
 RESOURCES += \
     res.qrc
 
-win32: RC_ICONS = $$PWD/images/appico.ico
-
