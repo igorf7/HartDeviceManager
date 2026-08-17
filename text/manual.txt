@@ -29,7 +29,8 @@ Supported HART versions: 4.0 – 7.5. The Hart Device Manager program is designe
 4.6 Six parameters are output: 1st variable (PV), 2nd variable (SV), 3rd variable (TV), 4th variable (QV), current and percentage of range.
 4.7 The graph of changes in the main parameter (1st variable) over time is displayed in the right area.
 4.8 You can significantly reduce the polling time by checking the “Only the 1st variable” box; in this case, only the main parameter will be polled and displayed.
-4.9 Below the <Start> and <Stop> buttons, the packet counter in the queue is displayed. If this counter is increasing, it means the selected polling period is too short and should be increased. If the counter is zero, the polling period can be reduced. This way, you can select the optimal polling period based on the readings of this counter.5. Menu Panel.
+4.9 Below the <Start> and <Stop> buttons, the packet counter in the queue is displayed. If this counter is increasing, it means the selected polling period is too short and should be increased. If the counter is zero, the polling period can be reduced. This way, you can select the optimal polling period based on the readings of this counter.
+5. Menu Panel.
 5.1 File-->Create...
 5.2 File-->Open...
 5.3 File-->Exit. Exit the program.
@@ -39,7 +40,8 @@ Supported HART versions: 4.0 – 7.5. The Hart Device Manager program is designe
 5.7 Commands-->Self-diagnosis. Starts the self-diagnosis procedure in the device.
 5.8 Commands-->Hardware reset. Returns to default settings. Resets all changes made to the device configuration.
 5.9 Help-->Instructions. Displays a brief guide to working with the program.
-5.10 Help-->About the program. Displays information about the program.6. Status bar.
+5.10 Help-->About the program. Displays information about the program.
+6. Status bar.
 6.1 The status bar is located at the very bottom of the program window. It displays various operational information about the program’s status or the execution of the current operation.
 
 RU
