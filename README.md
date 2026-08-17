@@ -4,6 +4,7 @@ Version 1.5.2
 The Hart Device Manager program is designed to test, interrogate and configure field devices with the HART protocol. Supported HART versions: 4.0 - 7.5
 ## Content
 The repository contains the project source files and release.
+The application for various operating systems can be downloaded from the Releases page.
 ## Licensing
 This project is licensed under the **MIT License** — you are free to use, modify, and distribute this source code. The full text of the license can be found in the [LICENSE](./LICENSE) file.
 **Important Note on Third-Party Components:**
